@@ -1,0 +1,3 @@
+APP_PASS = 'cwbwndmwxxugpzev'
+EMAIL_USER = 'ssribeiro@gmail.com'
+EMAIL_PASS = 
