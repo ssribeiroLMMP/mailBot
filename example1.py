@@ -10,12 +10,14 @@ from dotenv import load_dotenv
 load_dotenv()
 EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
 EMAIL_PASSWORD = os.environ.get('APP_PASS')
+SMTP_SERVER = os.environ.get('SMTP_SERVER')
+SMTP_PORT = os.environ.get('SMTP_PORT')
 # Test Environment Variables
 # print(EMAIL_ADDRESS)
 # print(EMAIL_PASSWORD)
 
 # Context 
-with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
     # smtp.ehlo()
     # smtp.starttls()
     # smtp.ehlo()
@@ -24,7 +26,7 @@ with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
     
     # Setup subject and body
-    subject = 'Grab dinner this weekend'
+    subject = 'NewMessageTest'
     body = 'How about dinner at 6pm this saturday?'
 
     # MiltiPart Mail - 
