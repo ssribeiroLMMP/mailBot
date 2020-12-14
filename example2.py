@@ -30,7 +30,7 @@ with imaplib.IMAP4_SSL(IMAP_SERVER)as imap:
         for part in email_msg.walk():
             if part.get_content_type()=="text/plain":
                 email_body = part.get_payload(decode=True)
-                print(email_body.decode())
-            elif part.get_content_type()=="text/plain" or part.get_content_type()=="text/html":
+                # print(email_body.decode())
+            elif part.get_content_type()=="text/html":
                 email_body = part.get_payload(decode=True)
-                print(email_body.decode())
+                # print(email_body.decode())
