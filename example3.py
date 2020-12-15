@@ -1,49 +1,39 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-with open('Message.html') as html_file:
+with open('output1.html') as html_file:
     soup = BeautifulSoup(html_file, 'lxml')
 
 print(soup.prettify())
 # Get all order info together
-match = soup.find_all('td')
+match = soup.title
 
 # Get Order Number
-orderNumberText =match[0].text
+orderNumberText =match.text
 for word in orderNumberText.split():
     if word.isdigit():
         orderNumber = int(word)
 
 # Get Order Date
-orderDateText = match[1].text
-orderDate = datetime.strptime(orderDateText,'%d/%m/%Y %H:%M')
-
-
-# Get all order info together
-match = soup.find_all('s')
+match = soup.find_all('td',style = "border-bottom: 1px solid #ddd; padding: 6px;")
 
 # Client Name
 orderClientName =match[1].text
 
 # Client CPF
-orderClientCPF =match[3].text
+orderClientEmail =match[3].text
 
 # Client Address
-orderClientAddress =match[4].text
+orderClientMobile =match[5].text
 
-# Get all order info together
-match = soup.find_all('span')
+# Client CPF
+orderClientCPF =match[7].text
 
-# Order Origin
-orderOrigin = match[2].text[18:]
-
-# Client Email
-orderClientEmail = match[5].text.replace('=\n    ','')
-
-# Client Phone
-orderClientPhone = match[7].text.replace('=\n    ','')
-
-# Client Mobile
-orderClientMobile = match[9].text.replace('=\n    ','')
+# Client Address
+orderClientAddress = match[9].text.replace('\n        ',' - ').replace('\n',' - ')
 
 # TODO: Order Details
+matchDiv = soup.find('div',style="color: #475C7A; padding: 5px 20px 10px; border: 5px solid #EFF8FF;")
+matchTable = matchDiv.find_all('table',border="0")
+
+
