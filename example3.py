@@ -1,5 +1,17 @@
 from bs4 import BeautifulSoup
+import sqlite3
 from datetime import datetime
+from time import mktime
+
+conn = sqlite3.connect('./database/Orders.db')
+
+def pretty(d, indent=0):
+   for key, value in d.items():
+      print('\t' * indent + str(key))
+      if isinstance(value, dict):
+         pretty(value, indent+1)
+      else:
+         print('\t' * (indent+1) + str(value))
 
 with open('output1.html') as html_file:
     soup = BeautifulSoup(html_file, 'lxml')
@@ -77,3 +89,44 @@ orderData = {'Number': orderNumber,
              'Shipment': OrderShipment,
              'Subtotal': orderSubtotal
              'Items': orderItems}
+
+
+with conn:
+    c = conn.cursor()
+    # Insert or Update Clients data
+    try:
+        c.execute("INSERT INTO clients VALUES (:CPF, :Name, :Email, :Mobile, :Address)", orderClientData)
+    except:
+        c.execute("""UPDATE clients SET name = :Name, 
+                                        email = :Email,
+                                        mobile = :Mobile,
+                                        address = :Address 
+                    WHERE cpf = :CPF""", orderClientData)
+    
+    # Insert or Update Order data
+    try:
+        c.execute("INSERT INTO orders VALUES (:Number, :DateTime, :Client)", orderData)
+    except:
+        c.execute("""UPDATE orders SET dateTime = :DateTime,
+                                        client = :Client 
+                    WHERE number = :Number""", orderData)
+    
+    # Insert or Update Order Items
+    try:
+        for item in orderItems:
+            c.execute("""INSERT INTO orderItems VALUES (orderData['Number'],
+                                                        item['id'],
+                                                        item['Description'],
+                                                        item['Quantity'],
+                                                        item['Price'])""")
+
+
+    except:
+        c.execute("""UPDATE clients SET name = :Name, 
+                                        email = :Email,
+                                        quantity = :Quantity,
+                                        price = :Price 
+                    WHERE orderNumber = :Number""", orderItems)
+pretty(order)
+
+# TODO: Save in Database
