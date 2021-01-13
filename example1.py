@@ -29,7 +29,7 @@ with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
     subject = 'NewMessageTest'
     body = 'How about dinner at 6pm this saturday?'
 
-    # MiltiPart Mail - 
+    # MultiPart Mail - 
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['From'] = EMAIL_ADDRESS
