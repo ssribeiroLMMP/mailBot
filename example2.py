@@ -1,5 +1,6 @@
 import os
 import imaplib, email
+from bs4 import BeautifulSoup
 
 # Load Environtment Variables at .env
 EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
@@ -11,7 +12,7 @@ IMAP_SERVER = os.environ.get('IMAP_SERVER')
 with imaplib.IMAP4_SSL(IMAP_SERVER)as imap:
     # Login
     imap.login(EMAIL_ADDRESS,EMAIL_PASSWORD)
-    imap.select("INBOX")
+    imap.select('INBOX')
 
     _,search_data, = imap.search(None,'UNSEEN')
     
@@ -19,6 +20,10 @@ with imaplib.IMAP4_SSL(IMAP_SERVER)as imap:
         # print(num)
         _,data = imap.fetch(num,'(RFC822)')
         _,msg_bytes = data[0]
+        soup = BeautifulSoup(msg_bytes, 'lxml')
+        print(soup.prettify())
+        with open("output1.html", "w") as file:
+            file.write(str(soup))
         email_msg = email.message_from_bytes(msg_bytes)
         # Read Mail Header
         email_header = {}
@@ -30,7 +35,7 @@ with imaplib.IMAP4_SSL(IMAP_SERVER)as imap:
         for part in email_msg.walk():
             if part.get_content_type()=="text/plain":
                 email_body = part.get_payload(decode=True)
-                print(email_body.decode())
-            elif part.get_content_type()=="text/plain" or part.get_content_type()=="text/html":
+                # print(email_body.decode())
+            elif part.get_content_type()=="text/html":
                 email_body = part.get_payload(decode=True)
-                print(email_body.decode())
+                # print(email_body.decode())
