@@ -1,5 +1,17 @@
 from bs4 import BeautifulSoup
+import sqlite3
 from datetime import datetime
+from time import mktime
+
+conn = sqlite3.connect('./database/Orders.db')
+
+def pretty(d, indent=0):
+   for key, value in d.items():
+      print('\t' * indent + str(key))
+      if isinstance(value, dict):
+         pretty(value, indent+1)
+      else:
+         print('\t' * (indent+1) + str(value))
 
 with open('output1.html') as html_file:
     soup = BeautifulSoup(html_file, 'lxml')
@@ -39,7 +51,7 @@ orderClientData = {'CPF': orderClientCPF,
                    'Mobile': orderClientMobile,
                    'Address': orderClientAddress}
 # Order Shipment Type
-orderChipment = 
+# orderChipment = 
 
 # Order Items Initialization
 orderItems = [{}]
@@ -59,7 +71,8 @@ for line in tableLines[1:]:
     ItemDescrition = columns[1].text.replace('  ','').replace('\n',' ')
     ItemQty = int(columns[2].text)
     ItemPrice = float(columns[3].text.replace('R$ ',''))
-    orderItems.append({'Id':ItemId ,
+    orderItems.append({"OrderNumber":orderNumber,
+                       'Id':ItemId ,
                        'Description':ItemDescrition,
                        'Quantity':ItemQty,
                        'Price':ItemPrice})
@@ -67,13 +80,65 @@ for line in tableLines[1:]:
 
 # Order Shipment Type
 tableLinesNew = matchTable[3].find_all('tr')
-OrderShipment = tableLinesNew[1].find_all('td').text
+OrderShipment = tableLinesNew[1].find_all('td')[1].text
+ShipmentPrice = float(tableLinesNew[1].find_all('td')[2].text.replace('R$ ',''))
+
 
 
 # Order Complete Data
 orderData = {'Number': orderNumber,
              'DateTime': mktime(datetime.now().timetuple()),
              'Client': orderClientData['CPF'],
-             'Shipment': OrderShipment,
-             'Subtotal': orderSubtotal
+             'ShipmentMethod': OrderShipment,
+             'ShipmentPrice': ShipmentPrice,
+             'Subtotal': orderSubtotal,
              'Items': orderItems}
+
+
+with conn:
+    c = conn.cursor()
+    # Insert or Update Clients data
+    try:
+        c.execute("INSERT INTO clients VALUES (:CPF, :Name, :Email, :Mobile, :Address)", orderClientData)
+    except:
+        c.execute("""UPDATE clients SET name = :Name, 
+                                        email = :Email,
+                                        mobile = :Mobile,
+                                        address = :Address 
+                    WHERE cpf = :CPF""", orderClientData)
+    
+    # Insert or Update Order data
+    try:
+        c.execute("""INSERT INTO orders VALUES (:Number, 
+                                                :DateTime, 
+                                                :Client, 
+                                                :ShipmentMethod, 
+                                                :ShipmentPrice, 
+                                                :Subtotal)""", orderData)
+    except:
+        c.execute("""UPDATE orders SET dateTime = :DateTime,
+                                        client = :Client 
+                    WHERE number = :Number""", orderData)
+    
+    # Insert or Update Order Items
+    try:
+        for item in orderItems:
+            c.execute("""INSERT INTO orderItems VALUES (:OrderNumber,
+                                                        :Id,
+                                                        :Description,
+                                                        :Quantity,
+                                                        :Price)""",item)
+
+
+    except:
+        c.execute("""UPDATE clients SET name = :Name, 
+                                        email = :Email,
+                                        quantity = :Quantity,
+                                        price = :Price 
+                    WHERE orderNumber = :Number""", orderItems)
+c.execute("SELECT * FROM orderItems")
+data = c.fetchall()
+for row in data:
+    print(row)
+
+# TODO: Create first app merging all together
