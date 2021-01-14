@@ -51,7 +51,7 @@ orderClientData = {'CPF': orderClientCPF,
                    'Mobile': orderClientMobile,
                    'Address': orderClientAddress}
 # Order Shipment Type
-orderChipment = 
+# orderChipment = 
 
 # Order Items Initialization
 orderItems = [{}]
@@ -71,7 +71,8 @@ for line in tableLines[1:]:
     ItemDescrition = columns[1].text.replace('  ','').replace('\n',' ')
     ItemQty = int(columns[2].text)
     ItemPrice = float(columns[3].text.replace('R$ ',''))
-    orderItems.append({'Id':ItemId ,
+    orderItems.append({"OrderNumber":orderNumber,
+                       'Id':ItemId ,
                        'Description':ItemDescrition,
                        'Quantity':ItemQty,
                        'Price':ItemPrice})
@@ -79,15 +80,18 @@ for line in tableLines[1:]:
 
 # Order Shipment Type
 tableLinesNew = matchTable[3].find_all('tr')
-OrderShipment = tableLinesNew[1].find_all('td').text
+OrderShipment = tableLinesNew[1].find_all('td')[1].text
+ShipmentPrice = float(tableLinesNew[1].find_all('td')[2].text.replace('R$ ',''))
+
 
 
 # Order Complete Data
 orderData = {'Number': orderNumber,
              'DateTime': mktime(datetime.now().timetuple()),
              'Client': orderClientData['CPF'],
-             'Shipment': OrderShipment,
-             'Subtotal': orderSubtotal
+             'ShipmentMethod': OrderShipment,
+             'ShipmentPrice': ShipmentPrice,
+             'Subtotal': orderSubtotal,
              'Items': orderItems}
 
 
@@ -105,7 +109,12 @@ with conn:
     
     # Insert or Update Order data
     try:
-        c.execute("INSERT INTO orders VALUES (:Number, :DateTime, :Client)", orderData)
+        c.execute("""INSERT INTO orders VALUES (:Number, 
+                                                :DateTime, 
+                                                :Client, 
+                                                :ShipmentMethod, 
+                                                :ShipmentPrice, 
+                                                :Subtotal)""", orderData)
     except:
         c.execute("""UPDATE orders SET dateTime = :DateTime,
                                         client = :Client 
@@ -114,11 +123,11 @@ with conn:
     # Insert or Update Order Items
     try:
         for item in orderItems:
-            c.execute("""INSERT INTO orderItems VALUES (orderData['Number'],
-                                                        item['id'],
-                                                        item['Description'],
-                                                        item['Quantity'],
-                                                        item['Price'])""")
+            c.execute("""INSERT INTO orderItems VALUES (:OrderNumber,
+                                                        :Id,
+                                                        :Description,
+                                                        :Quantity,
+                                                        :Price)""",item)
 
 
     except:
@@ -127,6 +136,9 @@ with conn:
                                         quantity = :Quantity,
                                         price = :Price 
                     WHERE orderNumber = :Number""", orderItems)
-pretty(order)
+c.execute("SELECT * FROM orderItems")
+data = c.fetchall()
+for row in data:
+    print(row)
 
-# TODO: Save in Database
+# TODO: Create first app merging all together
