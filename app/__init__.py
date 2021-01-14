@@ -69,7 +69,8 @@ try:
             number integer PRIMARY KEY,
             dateTime integer,
             clientid integer references clients(cpf),
-            shipping integer,
+            shipmentType text,
+            shipmentPrice text,
             subtotal real)""")
 
     c.execute("""CREATE TABLE orderItems (
