@@ -1,20 +1,11 @@
+#!./env/bin/python3
 ## Importing Own Libraries
 from mail.utils import EmailServer
 ## Importing Third Party Libraries
 import os
 
 def main():
-    emailServer = EmailServer()
     
-    recipients = {'To':'sergio@lmmp.mec.puc-rio.br',
-              'Cc':'ssribeiro@gmail.com'}
-
-    subject = 'New Test Message'
-    body = 'How about dinner at 6pm this saturday?'
-    
-    print('Ran the App')
-    print(emailServer.EMAIL_ADDRESS)
-    emailServer.sendMessage(recipients,subject,body)
 
 
 # # from flask_sqlalchemy import SQLAlchemy
