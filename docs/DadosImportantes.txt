@@ -1,0 +1,2 @@
+# Parâmetros Loja Integrada
+filterQuery = '(AND(FROM "nao-responder@avisoautomatico.com)(TEXT "Pedido de venda "))'
