@@ -12,9 +12,9 @@ IMAP_SERVER = os.environ.get('IMAP_SERVER')
 with imaplib.IMAP4_SSL(IMAP_SERVER)as imap:
     # Login
     imap.login(EMAIL_ADDRESS,EMAIL_PASSWORD)
-    imap.select('INBOX')
+    imap.select('Pedidos')
 
-    _,search_data, = imap.search(None,'UNSEEN')
+    _,search_data, = imap.search(None,'TEXT "Pedido de venda" UNSEEN')
     
     for num in search_data[0].split():
         # print(num)
