@@ -105,10 +105,10 @@ class EmailServer():
                 # Read Mail Body
                 for part in emailMessage.walk():
                     if part.get_content_type()=="text/plain":
-                        email_body = part.get_payload(decode=True).decode()
+                        email_body = part.get_payload(decode=True).decode('latin1')
 
                     elif part.get_content_type()=="text/html":
-                        email_body = part.get_payload(decode=True).decode()
+                        email_body = part.get_payload(decode=True).decode('latin1')
 
                 # Sets Dict Body 
                 messageDict['body'] = email_body
@@ -153,3 +153,10 @@ class EmailServer():
                 # Print any error messages to stdout
                 print(e)
                 return False,e
+
+
+    # # Find specific purchase data in message
+    # def getPurchaseData(self,messagesList)
+    #     # Sweep message List
+    #     for message in messageList:
+    #         messageBody = message['body']

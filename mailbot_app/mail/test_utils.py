@@ -35,21 +35,22 @@ class TestUtils(unittest.TestCase):
         return self.assertGreater(numOfMails,0)
 
     # Test Check for Mails method
-    def test_readMessages(self):
-        mailbox='INBOX'
-        filterQuery='UNSEEN'
+    def test_readMessages(self,mailbox='INBOX',filterQuery='UNSEEN'):
+        
         #Check for Mails
         emailServer = ut.EmailServer()
-        messagesList = emailServer.readMessages(mailbox='INBOX',filterQuery='UNSEEN',htmlFile = None)
+        messagesList = emailServer.readMessages(mailbox=mailbox,filterQuery=filterQuery,htmlFile = None)
         
         # Check if it returns a list
         return self.assertIsInstance(messagesList,type([1,2]))
     
 def main():
     testUtils = TestUtils()
-    testUtils.test_readMessages()
+    testUtils.test_readMessages(mailbox='INBOX',filterQuery='UNSEEN')
 
 # Attribute main call to mailbot_app
 if __name__ == '__main__':
+    # Automatic Testing
     unittest.main()
+    # # Manual Testing(Debug)
     # main()
