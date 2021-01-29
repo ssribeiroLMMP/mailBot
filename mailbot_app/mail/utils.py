@@ -69,7 +69,8 @@ class EmailServer():
             for mailID in mailIDs:
                 messageDict = {}
                 # Get mail data
-                _,mailData = imap.fetch(mailID,'(RFC822)')
+                # OK: PEEK fetch - does not mar as unseen
+                _,mailData = imap.fetch(mailID,'(BODY.PEEK[])')
                 # Collect message from mail data
                 _,mail_bytes = mailData[0]
                 # Scrape mail with BeatifulSoup Library

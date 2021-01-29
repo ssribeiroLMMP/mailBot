@@ -46,11 +46,11 @@ class TestUtils(unittest.TestCase):
     
 def main():
     testUtils = TestUtils()
-    testUtils.test_readMessages(mailbox='INBOX',filterQuery='UNSEEN')
+    testUtils.test_readMessages(mailbox='INBOX',filterQuery='(FROM "nao-responder@mercadolivre.com") (SUBJECT "A sua encomenda") (UNSEEN)')
 
 # Attribute main call to mailbot_app
 if __name__ == '__main__':
     # Automatic Testing
-    unittest.main()
+    # unittest.main()
     # # Manual Testing(Debug)
-    # main()
+    main()
