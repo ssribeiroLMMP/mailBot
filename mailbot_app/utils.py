@@ -15,11 +15,22 @@ def pretty(d, indent=0):
 
 # Check mail specifically for purchases
 def checkForPurchases():
-    emailServer = EmailServer()
+   emailServer = EmailServer()
 
-    # Compose filterQuery
-    # Example: 'UNSEEN (OR (FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda") (FROM "suporte@paghiper.com"))'
-    searchFilter = 'UNSEEN FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda"'
-    _, mailIDs, lenMailIDs = emailServer.checkForMails(mailbox='INBOX',filterQuery=searchFilter)
+   # Compose filterQuery
+   # Example: 'UNSEEN (OR (FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda") (FROM "suporte@paghiper.com"))'
+   searchFilter = 'UNSEEN FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda"'
+   _, mailIDs, lenMailIDs = emailServer.checkForMails(mailbox='INBOX',filterQuery=searchFilter)
 
-    return mailIDs, lenMailIDs
+   return mailIDs, lenMailIDs
+
+# Check mail specifically for purchases
+def checkForPayments():
+   emailServer = EmailServer()
+
+   # Compose filterQuery
+   # Example: 'UNSEEN (OR (FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda") (FROM "suporte@paghiper.com"))'
+   searchFilter = 'UNSEEN FROM "suporte@paghiper.com" TEXT "Pagamento" TEXT "foi aprovado"'
+   _, mailIDs, lenMailIDs = emailServer.checkForMails(mailbox='INBOX',filterQuery=searchFilter)
+
+   return mailIDs, lenMailIDs
