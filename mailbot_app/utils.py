@@ -24,6 +24,17 @@ def checkForPurchases():
 
    return mailIDs, lenMailIDs
 
+# Read purchases into Temp HTML Files
+def logRecentPurchasesHTML():
+   emailServer = EmailServer()
+
+   # Compose filterQuery
+   # Example: 'UNSEEN (OR (FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda") (FROM "suporte@paghiper.com"))'
+   searchFilter = 'UNSEEN FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda"'
+   recentPurchasesList = emailServer.readMessages(mailbox='INBOX',filterQuery=searchFilter,htmlFile='temp/purchaseMails')
+
+   return recentPurchasesList
+
 # Check mail specifically for purchases
 def checkForPayments():
    emailServer = EmailServer()

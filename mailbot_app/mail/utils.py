@@ -79,7 +79,9 @@ class EmailServer():
                 
                 # If desired write html file with mail content
                 if (htmlFile != None):
-                        # File Context
+                    htmlFile = htmlFile + '_' + str(mailID).replace("'","") + '.html'
+                    # File Context
+                    os.makedirs(os.path.dirname(htmlFile), exist_ok=True)
                     with open(htmlFile, "w") as file:
                         # write message into html File
                         file.write(str(soup))

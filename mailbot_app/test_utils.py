@@ -17,12 +17,18 @@ class TestUtils(unittest.TestCase):
         
         return self.assertIsNotNone(mailIDs),self.assertGreater(lenMailIDs,0)
 
+    def test_logRecentPurchasesHTML(self):
+        # Check for paymento confirmation mails
+        recentPurchasesList = ut.logRecentPurchasesHTML()
+        
+        return self.assertTrue(len(ut.os.listdir('./temp')) == len(recentPurchasesList))
 
 # MAnual Test
 def main():
     testUtils = TestUtils()
-    testUtils.test_checkForPurchases()
-    testUtils.test_checkForPayments()
+    # testUtils.test_checkForPurchases()
+    # testUtils.test_checkForPayments()
+    testUtils.test_logRecentPurchasesHTML()
 
 # Attribute main call to mailbot_app
 if __name__ == '__main__':
