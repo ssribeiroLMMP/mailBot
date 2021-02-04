@@ -1,6 +1,7 @@
 #!./env/bin/python3
 import unittest
 import utils as ut
+# from models import *
 import time
 
 
@@ -22,6 +23,14 @@ class TestUtils(unittest.TestCase):
         recentPurchasesList = ut.logRecentPurchasesHTML()
         
         return self.assertTrue(len(ut.os.listdir('./temp')) == len(recentPurchasesList))
+    
+    # def test_models(self):
+    #     # Check for paymento confirmation mails
+        
+        
+    #     return self.assertTrue(len(ut.os.listdir('./temp')) == len(recentPurchasesList))
+
+
 
 # MAnual Test
 def main():
@@ -29,6 +38,7 @@ def main():
     # testUtils.test_checkForPurchases()
     # testUtils.test_checkForPayments()
     testUtils.test_logRecentPurchasesHTML()
+    testUtils.test_models()
 
 # Attribute main call to mailbot_app
 if __name__ == '__main__':

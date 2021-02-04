@@ -6,49 +6,120 @@
 from dotenv import load_dotenv
 import datetime
 import sqlite3
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, Float, UniqueConstraint
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, DateTime, Float, UniqueConstraint
+from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-# Set Database path (.env)
-Database = declarative_base()
+
+# Load Environment Variables
+# load_dotenv()
+# TODO: Replace by Environment Variable DATA_BASE
+engine = create_engine('sqlite:///database/database.db', echo=True)
+
+# Database Object
+Base = declarative_base()
+
+# Get database connection Session() method
+Base.metadata.create_all(bind=engine)
+Session = sessionmaker(bind=engine)
 
 # Database Tables' Classes
 # Clients
-class Client(Database):
+class Client(Base):
     __tablename__ = "client"
     cpf = Column(String, primary_key=True)
     # first_name = Column(String)
     name = Column(String)
     email = Column(String)
-    mobile = Column(String)
+    mobile = Column(Integer)
     address = Column(String)
+    # orders = relationship('Order', backref="client")
     
-# Shipment
-class Shipment(Database):
-    shipment_id = Column(Integer, primary_key=True)
-    method = Column(String, unique=True)
-    price = Column(Float,default=0.00)
+    def __repr__(self):
+        return "<{}|{}|{}|{}>".format(self.cpf, self.name, self.email, self. mobile)
+
+    # TODO: Treat database errors
+    def add(self,session):
+        try: 
+            # Test Insert Client
+            session.add(self)
+            session.commit()
+            session.close()
+            return True
+        except:
+            session.rollback()
+            return False
+    
+    def getClientByCPF(self,cpf):
+        try: 
+            # Test Insert Client
+            session.add(self)
+            session.commit()
+            session.close()
+            return True
+        except:
+            return False
+
+# # Shipment
+# class Shipment(Base):
+#     __tablename__ = "shipment"
+#     id = Column(Integer, primary_key=True)
+#     method = Column(String, unique=True)
+#     orders = relationship('Order', backref="shipment")
 
 # Orders
-class Order(Database):
+class Order(Base):
     __tablename__ = "order"
-    order_number = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     # first_name = Column(String)
     datetime = Column(DateTime, default=datetime.datetime.utcnow)
-    shipment_method = Column(String, ForeignKey("shipment.method"))
+    client = Column(String, ForeignKey("client.cpf"))
+    shipment_method = Column(String)
     shipment_price = Column(Float)
     subtotal = Column(Float,default=0.00)
-    items = Column(Float,default=0.00)
+    items = relationship('OrderItems', backref="order")
+    
+    def __repr__(self):
+        return "<{}|{}|{}|{}>".format(id, self.datetime, self.client)
+
+    # TODO: Treat database errors
+    def add(self,session):
+        try: 
+            # Test Insert Client
+            session.add(self)
+            session.commit()
+            session.close()
+            return True
+        except:
+            session.rollback()
+            return False
 
 # Order Items
-class OrderItems(Database):
+class OrderItems(Base):
     __tablename__ = "order_items"
-    order_number = Column(String, ForeignKey("client.cpf"))
-    item_id = Column(Integer,nullable=False)
+    order_number = Column(Integer, ForeignKey("order.id"), primary_key=True)
+    item_id = Column(Integer, primary_key=True)
     description = Column(String, default='')
     quantity = Column(Integer, default=0)
     price = Column(Float, default=0.00)
     address = Column(String)
-    UniqueConstraint("order_number", "item_id", name='uix_1')
+    
+    def __repr__(self):
+        return "<{}|{}|{}|{}>".format(self.order_number, self.itenm_id, self.description)
+
+
+    # TODO: Treat database errors
+    def add(self,session):
+        try: 
+            # Test Insert Client
+            session.add(self)
+            session.commit()
+            session.close()
+            return True
+        except:
+            session.rollback()
+            return False
+
+
+
 
