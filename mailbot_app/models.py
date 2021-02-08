@@ -34,18 +34,19 @@ class Client(Base):
     def __repr__(self):
         return "<{}|{}|{}|{}>".format(self.cpf, self.name, self.email, self. mobile)
 
+    #Add Register Method 
     # TODO: Treat database errors
     def add(self,session):
         try: 
-            # Test Insert Client
             session.add(self)
             session.commit()
             session.close()
             return True
-        except:
+        except Exception as e:
+            print(e)
             session.rollback()
             return False
-    
+
     # def getClientByCPF(self,cpf):
     #     try: 
     #         # Test Insert Client
@@ -78,10 +79,10 @@ class Order(Base):
     def __repr__(self):
         return "<{}|{}|{}>".format(self.number, self.datetime, self.client)
 
+    #Add Register Method 
     # TODO: Treat database errors
     def add(self,session):
         try: 
-            # Test Insert Client
             session.add(self)
             session.commit()
             session.close()
@@ -92,30 +93,29 @@ class Order(Base):
             return False
 
 # Order Items
-# class OrderItems(Base):
-#     __tablename__ = "order_items"
-#     order_number = Column(Integer, ForeignKey("order.number"), primary_key=True)
-#     item_id = Column(Integer, primary_key=True)
-#     description = Column(String, default='')
-#     quantity = Column(Integer, default=0)
-#     price = Column(Float, default=0.00)
-#     address = Column(String)
+class OrderItem(Base):
+    __tablename__ = "order_items"
+    order_number = Column(Integer, ForeignKey("order.number"), primary_key=True)
+    item_id = Column(Integer, primary_key=True)
+    description = Column(String, default='')
+    quantity = Column(Integer, default=0)
+    unit_price = Column(Float, default=0.00)
     
-#     def __repr__(self):
-#         return "<{}|{}|{}|{}>".format(self.order_number, self.item_id, self.description)
+    def __repr__(self):
+        return "<{}|{}|{}|{}>".format(self.order_number, self.item_id, self.description,self.quantity, self.unit_price)
 
-
-#     # TODO: Treat database errors
-#     def add(self,session):
-#         try: 
-#             # Test Insert Client
-#             session.add(self)
-#             session.commit()
-#             session.close()
-#             return True
-#         except:
-#             session.rollback()
-#             return False
+    # Add Register Method 
+    # TODO: Treat database errors
+    def add(self,session):
+        try: 
+            session.add(self)
+            session.commit()
+            session.close()
+            return True
+        except Exception as e:
+            print(e)
+            session.rollback()
+            return False
 
 
 # Get database connection Session() method
@@ -125,9 +125,15 @@ Session = sessionmaker(bind=engine)
 # Test Select on Orders tables
 session = Session()
 clients = session.query(Client).all()
-orders = session.query(Order).all()
-for client in clients:
-    print(client)
 
-for order in orders:
-    print(order)
+# orderItems = session.query(OrderItem).all()
+#         for orderItem in orderItems:
+#             print(order)
+# for client in clients:
+#     print(client)
+#     orders = session.query(Order).filter_by(client = client.cpf).all()
+#     for order in orders:
+#         print(order)
+#         orderItems = session.query(OrderItem).filter_by(order_number = order.number).all()
+#         for orderItem in orderItems:
+#             print(orderItem)

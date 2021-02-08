@@ -54,15 +54,23 @@ class TestModels(unittest.TestCase):
         
         # Add a Client
         order = md.Order()
-        order.number = 1095
+        order.number = 1096
         order.datetime = datetime.datetime.utcnow()
-        order.client = '102.821.607-61'
+        order.client = '102.821.607-60'
         order.shipment_method = 'Motoboy'
         order.shipment_price = 9.00
-        order.subtotal = 50.0
+        order.subtotal = 20.0
         return self.assertTrue(order.add(md.Session()))
-    
-        
+
+    def test_addOrderItem(self):
+        # Add a Client
+        orderItem = md.OrderItem()
+        orderItem.order_number = 1095
+        orderItem.item_id = 1
+        orderItem.description = 'Item de teste'
+        orderItem.quantity = 10
+        orderItem.unit_price = 9.00
+        return self.assertTrue(orderItem.add(md.Session()))   
 
 # MAnual Test
 def main():
@@ -71,7 +79,8 @@ def main():
     # testModels.test_addNewClient()
     # testModels.test_addNewClient_2()
     # testModels.test_addExistingClient()
-    testModels.test_addOrder()
+    # testModels.test_addOrder()
+    # testModels.test_addOrderItem()
     
 # Attribute main call to mailbot_app
 if __name__ == '__main__':
