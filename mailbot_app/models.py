@@ -19,10 +19,6 @@ engine = create_engine('sqlite:///database/database.db', echo=True)
 # Database Object
 Base = declarative_base()
 
-# Get database connection Session() method
-Base.metadata.create_all(bind=engine)
-Session = sessionmaker(bind=engine)
-
 # Database Tables' Classes
 # Clients
 class Client(Base):
@@ -50,15 +46,15 @@ class Client(Base):
             session.rollback()
             return False
     
-    def getClientByCPF(self,cpf):
-        try: 
-            # Test Insert Client
-            session.add(self)
-            session.commit()
-            session.close()
-            return True
-        except:
-            return False
+    # def getClientByCPF(self,cpf):
+    #     try: 
+    #         # Test Insert Client
+    #         session.add(self)
+    #         session.commit()
+    #         session.close()
+    #         return True
+    #     except:
+    #         return False
 
 # # Shipment
 # class Shipment(Base):
@@ -70,17 +66,17 @@ class Client(Base):
 # Orders
 class Order(Base):
     __tablename__ = "order"
-    id = Column(Integer, primary_key=True)
+    number = Column(Integer, primary_key=True)
     # first_name = Column(String)
-    datetime = Column(DateTime, default=datetime.datetime.utcnow)
+    datetime = Column(DateTime, default=datetime.datetime.utcnow())
     client = Column(String, ForeignKey("client.cpf"))
     shipment_method = Column(String)
     shipment_price = Column(Float)
     subtotal = Column(Float,default=0.00)
-    items = relationship('OrderItems', backref="order")
+    # items = relationship('OrderItems', backref="order")
     
     def __repr__(self):
-        return "<{}|{}|{}|{}>".format(id, self.datetime, self.client)
+        return "<{}|{}|{}>".format(self.number, self.datetime, self.client)
 
     # TODO: Treat database errors
     def add(self,session):
@@ -90,36 +86,48 @@ class Order(Base):
             session.commit()
             session.close()
             return True
-        except:
+        except Exception as e:
+            print(e)
             session.rollback()
             return False
 
 # Order Items
-class OrderItems(Base):
-    __tablename__ = "order_items"
-    order_number = Column(Integer, ForeignKey("order.id"), primary_key=True)
-    item_id = Column(Integer, primary_key=True)
-    description = Column(String, default='')
-    quantity = Column(Integer, default=0)
-    price = Column(Float, default=0.00)
-    address = Column(String)
+# class OrderItems(Base):
+#     __tablename__ = "order_items"
+#     order_number = Column(Integer, ForeignKey("order.number"), primary_key=True)
+#     item_id = Column(Integer, primary_key=True)
+#     description = Column(String, default='')
+#     quantity = Column(Integer, default=0)
+#     price = Column(Float, default=0.00)
+#     address = Column(String)
     
-    def __repr__(self):
-        return "<{}|{}|{}|{}>".format(self.order_number, self.itenm_id, self.description)
+#     def __repr__(self):
+#         return "<{}|{}|{}|{}>".format(self.order_number, self.item_id, self.description)
 
 
-    # TODO: Treat database errors
-    def add(self,session):
-        try: 
-            # Test Insert Client
-            session.add(self)
-            session.commit()
-            session.close()
-            return True
-        except:
-            session.rollback()
-            return False
+#     # TODO: Treat database errors
+#     def add(self,session):
+#         try: 
+#             # Test Insert Client
+#             session.add(self)
+#             session.commit()
+#             session.close()
+#             return True
+#         except:
+#             session.rollback()
+#             return False
 
 
+# Get database connection Session() method
+Base.metadata.create_all(bind=engine)
+Session = sessionmaker(bind=engine)
 
+# Test Select on Orders tables
+session = Session()
+clients = session.query(Client).all()
+orders = session.query(Order).all()
+for client in clients:
+    print(client)
 
+for order in orders:
+    print(order)
