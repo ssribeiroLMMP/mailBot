@@ -10,7 +10,7 @@ class TestModels(unittest.TestCase):
 
     def test_addNewClient(self):
 
-        # Add a Client with already exists
+        # Add a Client which does not exist in Database
         client = md.Client()
         client.cpf = '092.329.507-07'
         client.name = 'Sergio Ribeiro'
@@ -19,9 +19,20 @@ class TestModels(unittest.TestCase):
         client.address = 'Rua Stanley Gomes, 131, Casa - Rio de Janeiro - RJ'
         return self.assertTrue(client.add(md.Session()))
 
+    def test_addNewClient_2(self):
+
+        # Add a Client which does not exist in Database
+        client = md.Client()
+        client.cpf = '102.821.607-61'
+        client.name = 'Priscilla Varges Dopelganger'
+        client.email = 'pri_varges@yahoo.com.br'
+        client.mobile = 2132154656
+        client.address = 'Rua Stanley Gomes, 131, Casa - Rio de Janeiro - RJ'
+        return self.assertTrue(client.add(md.Session()))
+
     def test_addExistingClient(self):
 
-        # Add a Client with already exists
+        # Add a Client which already exists
         client = md.Client()
         client.cpf = '102.821.607-60'
         client.name = 'Priscilla Varges'
@@ -30,36 +41,41 @@ class TestModels(unittest.TestCase):
         client.address = 'Rua Stanley Gomes, 131, Casa - Rio de Janeiro - RJ'
         return self.assertFalse(client.add(md.Session()))
     
-    def test_getExistingClientByCPF(self,cpf):
+    # def test_getExistingClientByCPF(self,cpf):
 
-        # Add a Client with already exists
-        try:
-            client = md.Session().query(md.Client).filter(md.Client.cpf == cpf).first()
-            return self.assertIsInstance(client,md.Client)
-        except:
-            return False
+    #     # Add a Client with already exists
+    #     try:
+    #         client = md.Session().query(md.Client).filter(md.Client.cpf == cpf).first()
+    #         return self.assertIsInstance(client,md.Client)
+    #     except:
+    #         return False
         
-    # def test_addOrder(self):
-    #     # Add a Client
-    #     order = md.Order()
-    #     order.id = 1098
-    #     order.datetime = datetime.datetime.utcnow
-    #     order.email = 'pri_varges@yahoo.com.br'
-    #     order.shipment_method = 'Motoboy'
-    #     order.shipment_price = 9.00
-
-    #     clientCPF = Client()
-
-    #     order.client = 
+    def test_addOrder(self):
+        
+        # Add a Client
+        order = md.Order()
+        order.number = 1095
+        order.datetime = datetime.datetime.utcnow()
+        order.client = '102.821.607-61'
+        order.shipment_method = 'Motoboy'
+        order.shipment_price = 9.00
+        order.subtotal = 50.0
+        return self.assertTrue(order.add(md.Session()))
+    
+        
 
 # MAnual Test
 def main():
     testModels = TestModels()
-    testModels.test_addClient()
+    # testModels.test_addClient()
+    # testModels.test_addNewClient()
+    # testModels.test_addNewClient_2()
+    # testModels.test_addExistingClient()
+    testModels.test_addOrder()
     
 # Attribute main call to mailbot_app
 if __name__ == '__main__':
     # # Automatic Testing
-    unittest.main()
-    # MAnual Testing
-    # main()
+    # unittest.main()
+    # Manual Testing
+    main()
