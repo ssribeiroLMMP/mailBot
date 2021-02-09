@@ -46,3 +46,14 @@ def checkForPayments():
    _, mailIDs, lenMailIDs = emailServer.checkForMails(mailbox='INBOX',filterQuery=searchFilter)
 
    return mailIDs, lenMailIDs
+
+# StorePayments
+def storePayments():
+   emailServer = EmailServer()
+
+   # Compose filterQuery
+   # Example: 'UNSEEN (OR (FROM "nao-responder@avisoautomatico.com" TEXT "Pedido de venda") (FROM "suporte@paghiper.com"))'
+   searchFilter = 'UNSEEN FROM "suporte@paghiper.com" TEXT "Pagamento" TEXT "foi aprovado"'
+   _, mailIDs, lenMailIDs = emailServer.readMessages(mailbox='INBOX',filterQuery=searchFilter,htmlFile='temp/purchaseMails')
+
+   return mailIDs, lenMailIDs
